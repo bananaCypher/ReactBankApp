@@ -1,22 +1,27 @@
 module.exports = [
   { "owner": "jay",
     "amount": 125.50,
-    "type": "personal"
+    "type": "personal",
+    "details": "Can clearly draw frogs"
   },
   { "owner": "val",
     "amount": 55125.10,
-    "type": "personal"
+    "type": "personal",
+    "details": "Wanted rubot thief"
   },
   { "owner": "marc",
     "amount": 400.00,
-    "type": "personal"
+    "type": "personal",
+    "details": "Worship mongod on Mondays"
   },
   { "owner": "keith",
     "amount": 220.25,
-    "type": "business"
+    "type": "business",
+    "details": "K317h is 1337"
   },
   { "owner": "rick",
     "amount": 100000.00,
-    "type": "business"
+    "type": "business",
+    "details": "Got hacked and somehow still has 100K... right"
   }
 ]

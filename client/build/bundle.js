@@ -54,38 +54,8 @@
 	
 	var BankBox = __webpack_require__(162);
 	
-	// var createItemForAccount = function(account){
-	//   var accountListItem = document.createElement('li');
-	//   accountListItem.innerText = account.owner + ": £" + account.amount;
-	//   return accountListItem;
-	// }
-	
-	// var populateAccountList = function(listElement, accounts){
-	//   for(var account of accounts){
-	//     listElement.appendChild(createItemForAccount(account));
-	//   }
-	// }
-	
 	window.onload = function () {
 	  ReactDOM.render(React.createElement(BankBox, null), document.getElementById('app'));
-	  // var bank = new Bank();
-	  // for(var account of sampleAccounts){
-	  //   bank.addAccount(account);
-	  // }
-	
-	  // var totalDisplay = document.getElementById('total');
-	  // var businessTotalDisplay = document.getElementById('business-total');
-	  // var personalTotalDisplay = document.getElementById('personal-total');
-	
-	  // totalDisplay.innerText = "Total: £" + bank.totalCash();
-	  // businessTotalDisplay.innerText = "Total Business: £" + bank.totalCash('business');
-	  // personalTotalDisplay.innerText = "Total Personal: £" + bank.totalCash('personal');
-	
-	  // var businessAccountList = document.getElementById('business-accounts');
-	  // var personalAccountList = document.getElementById('personal-accounts');
-	
-	  // populateAccountList(businessAccountList, bank.filteredAccounts('business'));
-	  // populateAccountList(personalAccountList, bank.filteredAccounts('personal'));
 	};
 
 /***/ },
@@ -194,6 +164,32 @@
 	  },
 	  accountAverage: function accountAverage() {
 	    return this.totalCash() / this.accounts.length;
+	  },
+	  addInterest: function addInterest() {
+	    var _iteratorNormalCompletion4 = true;
+	    var _didIteratorError4 = false;
+	    var _iteratorError4 = undefined;
+	
+	    try {
+	      for (var _iterator4 = this.accounts[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	        var account = _step4.value;
+	
+	        account.amount += account.amount * 0.1;
+	      }
+	    } catch (err) {
+	      _didIteratorError4 = true;
+	      _iteratorError4 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	          _iterator4.return();
+	        }
+	      } finally {
+	        if (_didIteratorError4) {
+	          throw _iteratorError4;
+	        }
+	      }
+	    }
 	  }
 	};
 	
@@ -220,23 +216,28 @@
 	module.exports = [
 	  { "owner": "jay",
 	    "amount": 125.50,
-	    "type": "personal"
+	    "type": "personal",
+	    "details": "Can clearly draw frogs"
 	  },
 	  { "owner": "val",
 	    "amount": 55125.10,
-	    "type": "personal"
+	    "type": "personal",
+	    "details": "Wanted rubot thief"
 	  },
 	  { "owner": "marc",
 	    "amount": 400.00,
-	    "type": "personal"
+	    "type": "personal",
+	    "details": "Worship mongod on Mondays"
 	  },
 	  { "owner": "keith",
 	    "amount": 220.25,
-	    "type": "business"
+	    "type": "business",
+	    "details": "K317h is 1337"
 	  },
 	  { "owner": "rick",
 	    "amount": 100000.00,
-	    "type": "business"
+	    "type": "business",
+	    "details": "Got hacked and somehow still has 100K... right"
 	  }
 	]
 
@@ -19850,14 +19851,19 @@
 	var React = __webpack_require__(4);
 	var sampleAccounts = __webpack_require__(3);
 	var Bank = __webpack_require__(1);
+	var AccountsBox = __webpack_require__(163);
+	var AccountDisplay = __webpack_require__(164);
 	
 	var BankBox = React.createClass({
 	  displayName: 'BankBox',
 	
 	  getInitialState: function getInitialState() {
-	    return { accounts: sampleAccounts };
+	    return { accounts: sampleAccounts, currentAccount: sampleAccounts[0] };
 	  },
-	  render: function render() {
+	  changeCurrentAccount: function changeCurrentAccount(account) {
+	    this.setState({ currentAccount: account });
+	  },
+	  addInterest: function addInterest() {
 	    var bank = new Bank();
 	    var _iteratorNormalCompletion = true;
 	    var _didIteratorError = false;
@@ -19884,6 +19890,45 @@
 	      }
 	    }
 	
+	    bank.addInterest();
+	    this.setState({ accounts: bank.accounts });
+	  },
+	  deleteAccount: function deleteAccount(account) {
+	    for (var i = 0; i < this.state.accounts.length; i++) {
+	      if (this.state.accounts[i].owner == account.owner) {
+	        var newAccounts = this.state.accounts;
+	        newAccounts.splice(i, 1);
+	        this.setState({ accounts: newAccounts });
+	      }
+	    }
+	  },
+	  render: function render() {
+	    var bank = new Bank();
+	    var _iteratorNormalCompletion2 = true;
+	    var _didIteratorError2 = false;
+	    var _iteratorError2 = undefined;
+	
+	    try {
+	      for (var _iterator2 = this.state.accounts[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	        var account = _step2.value;
+	
+	        bank.addAccount(account);
+	      }
+	    } catch (err) {
+	      _didIteratorError2 = true;
+	      _iteratorError2 = err;
+	    } finally {
+	      try {
+	        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	          _iterator2.return();
+	        }
+	      } finally {
+	        if (_didIteratorError2) {
+	          throw _iteratorError2;
+	        }
+	      }
+	    }
+	
 	    return React.createElement(
 	      'div',
 	      null,
@@ -19897,12 +19942,126 @@
 	        null,
 	        'Total: £',
 	        bank.totalCash()
-	      )
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.addInterest },
+	        'Add Interest'
+	      ),
+	      React.createElement(AccountsBox, { type: 'personal', bank: bank, changeAccount: this.changeCurrentAccount }),
+	      React.createElement(AccountsBox, { type: 'business', bank: bank, changeAccount: this.changeCurrentAccount }),
+	      React.createElement(AccountDisplay, { account: this.state.currentAccount, deleteAccount: this.deleteAccount })
 	    );
 	  }
 	});
 	
 	module.exports = BankBox;
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(4);
+	
+	var AccountsBox = React.createClass({
+	  displayName: 'AccountsBox',
+	
+	  render: function render() {
+	    var accountNodes = this.props.bank.filteredAccounts(this.props.type).map(function (account, index) {
+	      var changeToAccount = function () {
+	        this.props.changeAccount(account);
+	      }.bind(this);
+	      return React.createElement(
+	        'li',
+	        { key: index },
+	        React.createElement(
+	          'a',
+	          { href: '#', onClick: changeToAccount },
+	          account.owner
+	        ),
+	        ', balance: £',
+	        account.amount
+	      );
+	    }.bind(this));
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        this.props.type
+	      ),
+	      React.createElement(
+	        'p',
+	        null,
+	        'Total: £',
+	        this.props.bank.totalCash(this.props.type)
+	      ),
+	      accountNodes
+	    );
+	  }
+	});
+	
+	module.exports = AccountsBox;
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(4);
+	
+	var AccountDisplay = React.createClass({
+	  displayName: 'AccountDisplay',
+	
+	  render: function render() {
+	    var deleteThisAccount = function () {
+	      this.props.deleteAccount(this.props.account);
+	    }.bind(this);
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Account Display'
+	      ),
+	      React.createElement(
+	        'p',
+	        null,
+	        'Owner: ',
+	        this.props.account.owner
+	      ),
+	      React.createElement(
+	        'p',
+	        null,
+	        'Balance: ',
+	        this.props.account.amount
+	      ),
+	      React.createElement(
+	        'p',
+	        null,
+	        'Account Type: ',
+	        this.props.account.type
+	      ),
+	      React.createElement(
+	        'p',
+	        null,
+	        this.props.account.details
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: deleteThisAccount },
+	        'Delete Account'
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = AccountDisplay;
 
 /***/ }
 /******/ ]);
